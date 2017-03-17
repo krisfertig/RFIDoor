@@ -18,7 +18,7 @@ const unsigned char bot_mask = (1 << pin_bot);
 
 unsigned long tempo = 1000;
 
-UART uart;
+UART uart(19200, UART::DATABITS_6, UART::PARITY_EVEN, UART::STOPBITS_2);
 
 void setup() {
 

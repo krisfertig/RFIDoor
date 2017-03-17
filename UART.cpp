@@ -8,19 +8,39 @@
 #include "UART.h"
 #include <avr/io.h>
 
-UART::UART(int br, int db, int pr, int sb)
+UART::UART(unsigned long br, DataBits_t db, ParityBits_t pr, StopBits_t sb)
 //inicialização padrão dos parâmetros/atributos
 : _baudrate(br),
   _databits(db),
   _parity(pr),
   _stopbits(sb)
 {
+	/* Set frame format: 8N1 (8data, 1stop bit) */
+	//UCSR0C = (3<<UCSZ00);
+
+	// set baudrate
 	UBRR0 = F_CPU / (16ul *_baudrate) - 1;
 
+	// liga Tx e Rx
 	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
 
-	/* Set frame format: 8data, 1stop bit */
-	UCSR0C = (3<<UCSZ00);
+	// set databits
+	if (_databits == DATABITS_9) {
+		//...
+	} else
+		UCSR0C = (UCSR0C & ~(3 << UCSZ00)) | (_databits<< UCSZ00);
+
+	// set parity
+	UCSR0C = (UCSR0C & ~(3 << UPM00)) | (_parity << UPM00);
+
+	// set stopbits
+	UCSR0C = (UCSR0C & ~(1 << USBS0)) | (_stopbits << USBS0);	// read, modify, update
+
+	//unsigned char reg = UCSR0C; // read
+	// 1º zera o registrador (aplicando a máscara) e depois coloca o valor de _stopbits
+	//reg = (reg & ~(1 << USBS0)) | (_stopbits << USBS0);	// modify
+	//UCSR0C = reg; //update
+
 }
 
 UART::~UART() {
