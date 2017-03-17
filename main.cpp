@@ -48,7 +48,8 @@ void apaga_led() {
 
 //loop botao_led
 void loop() {
-	uart.put('a');
+	uart.put(uart.get() + 1);
+
 	if(ler_botao()) {
 		//printf("Acendendo LED...\n");
 		acende_led();

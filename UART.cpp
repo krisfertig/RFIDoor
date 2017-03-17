@@ -30,8 +30,17 @@ UART::~UART() {
 void UART::put(unsigned char data) {
 
 	/* Wait for empty transmit buffer */
-	while ( !( UCSR0A & (1<<UDRE0)) )
-	;
+	// wait until UDR is empty
+	while ( !( UCSR0A & (1<<UDRE0)) );
 	/* Put data into buffer, sends the data */
 	UDR0 = data;
+}
+
+unsigned char UART::get()
+{
+	// wait until data is received
+	while ( !(UCSR0A & (1<<RXC0)) );
+
+	// return received data
+	return UDR0;
 }
