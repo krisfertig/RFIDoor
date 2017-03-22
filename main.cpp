@@ -9,53 +9,42 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include "UART.h"
+#include "GPIO.h"
 
-char pin_led = 3;
-const unsigned char led_mask = (1 << pin_led);
-
-char pin_bot = 4;
-const unsigned char bot_mask = (1 << pin_bot);
+const int pin_led = 11;
+const int pin_bot = 12;
 
 unsigned long tempo = 1000;
 
 UART uart(19200, UART::DATABITS_6, UART::PARITY_EVEN, UART::STOPBITS_2);
 
+GPIO led(pin_led, GPIO::OUTPUT);
+GPIO botao(pin_bot, GPIO::INPUT);
+
 void setup() {
 
-	DDRB = (DDRB | led_mask) & ~bot_mask;
 }
 
 bool ler_botao() {
-	return (PINB & bot_mask);
+	return botao.get();
 }
 
 void acende_led() {
-	PORTB = PORTB | led_mask; //acende
+	return led.set(true);
 }
 
 void apaga_led() {
-	PORTB = PORTB & ~led_mask; //apaga
+	return led.set(false);
 }
 
-// loop pisca_led
-/*void loop() {
-
-	acende_led();
-	_delay_ms(tempo);
-	apaga_led();
-	_delay_ms(tempo);
-}*/
-
-//loop botao_led
 void loop() {
-	uart.put(uart.get() + 1);
+	//uart.put(uart.get() + 1);
 
+	//led.set(botao.get());
 	if(ler_botao()) {
-		//printf("Acendendo LED...\n");
 		acende_led();
 	}
 	else {
-		//printf("Apagando LED...\n");
 		apaga_led();
 	}
 }
