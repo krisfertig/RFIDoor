@@ -8,11 +8,13 @@
 #include <util/delay.h>
 #include <avr/io.h>
 #include <stdio.h>
+#include <avr/interrupt.h>
 #include "UART.h"
 #include "GPIO.h"
+#include "Timer.h"
 
-const int pin_led = 11;
-const int pin_bot = 12;
+const int pin_led = 8; //11;
+const int pin_bot = 10; //12;
 
 unsigned long tempo = 1000;
 
@@ -20,33 +22,23 @@ UART uart(19200, UART::DATABITS_6, UART::PARITY_EVEN, UART::STOPBITS_2);
 
 GPIO led(pin_led, GPIO::OUTPUT);
 GPIO botao(pin_bot, GPIO::INPUT);
+Timer timer(1000);
 
-void setup() {
+void setup() {}
 
-}
-
-bool ler_botao() {
-	return botao.get();
-}
-
-void acende_led() {
-	return led.set(true);
-}
-
-void apaga_led() {
-	return led.set(false);
-}
+bool val_botao;
+char message[8];
 
 void loop() {
-	//uart.put(uart.get() + 1);
 
-	//led.set(botao.get());
-	if(ler_botao()) {
-		acende_led();
-	}
-	else {
-		apaga_led();
-	}
+	val_botao = botao.get();
+	led.set(botao.get());
+	//sprintf(message, "LED: %d\n", val_botao);
+	//uart.puts(message);
+	//_delay_ms(100);
+
+	sprintf(message, "%d\n", timer.millis());
+	uart.puts(message);
 }
 
 int main() {

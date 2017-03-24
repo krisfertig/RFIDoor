@@ -47,3 +47,8 @@ bool GPIO::get() {
 	// ler do registrador PIN
 	return (*_pin)&_mask;
 }
+
+void puts(const char *) {
+
+}
+

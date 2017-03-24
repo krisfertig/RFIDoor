@@ -21,6 +21,7 @@ public:
 
 	void set(bool val);
 	bool get();
+	void puts(const char *);
 
 private:
 	PortDirection_t _dir;
