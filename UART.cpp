@@ -26,7 +26,8 @@ UART::UART(unsigned long br, DataBits_t db, ParityBits_t pr, StopBits_t sb)
 
 	// set databits
 	if (_databits == DATABITS_9) {
-		//...
+		UCSR0C = (UCSR0C & ~(3 << UCSZ00)) | (3 << UCSZ00); // read, modify e update
+		UCSR0B = (UCSR0B & ~(1 << UCSZ02)) | (1 << UCSZ02); // read, modify e update
 	} else
 		UCSR0C = (UCSR0C & ~(3 << UCSZ00)) | (_databits<< UCSZ00);
 
@@ -63,4 +64,11 @@ unsigned char UART::get()
 
 	// return received data
 	return UDR0;
+}
+
+void UART::puts(char* str){
+	while(*str != '\0'){
+		this->put(*str);
+		str++;
+	}
 }
